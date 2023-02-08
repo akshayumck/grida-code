@@ -189,8 +189,20 @@ export async function designToCode({
         })),
         ..._extend_result,
       };
-  }
-
+    case 'uidl':
+      const dummRaw = {
+        raw: JSON.stringify({harshit:'harshit',sourabh:'sourabh'}),
+      };
+      return {
+        code: dummRaw,
+        scaffold: dummRaw,
+        main: dummRaw,
+        id: "13:3865",
+        name: "kjlj",
+        ..._extend_result,
+      };
+    }
+  
   throw `The framework "${
     // @ts-ignore
     framework_config.framework
@@ -295,34 +307,44 @@ export async function designToFlutter({
   build_config?: config.BuildConfiguration;
   flutter_config?: config.FlutterFrameworkConfig;
 }): Promise<output.ICodeOutput> {
-  await Promise.resolve();
+  try {
+    await Promise.resolve();
 
-  const flutterwidget = toFlutter.buildFlutterWidget(input.widget);
-  const flutterapp = toFlutter.buildFlutterApp(
-    input.widget.key,
-    flutterwidget,
-    {
-      id: input.widget.key.id,
+    const flutterwidget = toFlutter.buildFlutterWidget(input.widget);
+    const flutterapp = toFlutter.buildFlutterApp(
+      input.widget.key,
+      flutterwidget,
+      {
+        id: input.widget.key.id,
+      }
+    );
+
+    // ------------------------------------------------------------------------
+    // finilize temporary assets
+    // this should be placed somewhere else
+    if (
+      asset_config?.asset_repository &&
+      !asset_config.skip_asset_replacement
+    ) {
+      const assets = await resolve_assets(asset_config);
+      flutterapp.scaffold.raw = dangerous_temporary_asset_replacer(
+        flutterapp.scaffold.raw,
+        assets
+      );
+      flutterapp.code.raw = dangerous_temporary_asset_replacer(
+        flutterapp.code.raw,
+        assets
+      );
     }
-  );
-
-  // ------------------------------------------------------------------------
-  // finilize temporary assets
-  // this should be placed somewhere else
-  if (asset_config?.asset_repository && !asset_config.skip_asset_replacement) {
-    const assets = await resolve_assets(asset_config);
-    flutterapp.scaffold.raw = dangerous_temporary_asset_replacer(
-      flutterapp.scaffold.raw,
-      assets
-    );
-    flutterapp.code.raw = dangerous_temporary_asset_replacer(
-      flutterapp.code.raw,
-      assets
-    );
+    // ------------------------------------------------------------------------
+    // console.log(JSON.stringify(flutterapp));
+    // await Promise.resolve();
+    return flutterapp;
+  } catch (e) {
+    console.log(`eeeeeeeeeeeeeee`);
+    console.trace(e);
+    console.log(`eeeeeeeeeeeeeee`);
   }
-  // ------------------------------------------------------------------------
-
-  return flutterapp;
 }
 
 export function designToVue(input: input.IDesignInput): output.ICodeOutput {
@@ -493,11 +515,14 @@ const resolve_assets = async ({ asset_repository, resolver }: AssetsConfig) => {
   }
 };
 
+// const default_asset_replacement_prefix =
+//   "https://images.pexels.com/photos/5015429/pexels-photo-5015429.jpeg";
 const default_asset_replacement_prefix = "grida://assets-reservation/images/";
 const dangerous_temporary_asset_replacer = (r, a) => {
   return finalize_temporary_assets_with_prefixed_static_string_keys__dangerously(
     r,
     default_asset_replacement_prefix,
+    // 'http://localhost/',
     a,
     { fallback: k.image_smallest_fallback_source_base_64 }
   );
@@ -511,6 +536,7 @@ const dangerous_custom_static_resource_replacer = (
   return finalize_temporary_assets_with_prefixed_static_string_keys__dangerously(
     code,
     default_asset_replacement_prefix,
+    // 'here',
     {
       replacer: (k) => staticres,
       keys,

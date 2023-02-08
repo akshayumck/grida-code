@@ -46,6 +46,8 @@ function FrameworkIcon({ type }: { type: BaseFramework }) {
       return <ExpoIcon {...props} />;
     case "solid-js":
       return <SolidJsIcon {...props} color="white" />;
+    case "uidl":
+      return <ExpoIcon {...props} color="black" />;
     default:
       return <></>;
   }
@@ -57,4 +59,5 @@ const frameworkdisplaynamemap = {
   flutter: "Flutter",
   "solid-js": "Solid.js",
   vanilla: "Vanilla",
+  uidl: 'UIDL'
 } as const;

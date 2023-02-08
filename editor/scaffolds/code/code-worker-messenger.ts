@@ -95,7 +95,8 @@ export async function code({
   return new Promise((resolve, reject) => {
     const handler = (e) => {
       const id = e.data.id;
-      if (target === id) {
+      // if (target === id) {
+      if (framework?.framework === 'flutter' ? id?.includes(target) : target === id) {
         switch (e.data.$type) {
           case "result":
             resolve(e.data);

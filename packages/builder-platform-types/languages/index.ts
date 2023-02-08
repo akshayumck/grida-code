@@ -3,4 +3,5 @@ export enum Language {
   tsx = "tsx",
   dart = "dart",
   html = "html",
+  uidl = 'uidl'
 }

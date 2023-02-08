@@ -26,7 +26,8 @@ export type FrameworkConfig =
   | SolidFrameworkConfig
   | FlutterFrameworkConfig
   | VanillaFrameworkConfig
-  | VanillaPreviewFrameworkConfig;
+  | VanillaPreviewFrameworkConfig
+  | UIDLConfig;
 
 export type { ReactFrameworkConfig };
 export type { ReactNativeFrameworkConfig };
@@ -37,6 +38,10 @@ export type { VanillaPreviewFrameworkConfig };
 export interface FlutterFrameworkConfig {
   framework: "flutter";
   language: Language.dart;
+}
+export interface UIDLConfig {
+  framework: "uidl";
+  language: Language.uidl;
 }
 
 export * as android from "../framework-android";

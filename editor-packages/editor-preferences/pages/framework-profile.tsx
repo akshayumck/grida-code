@@ -45,6 +45,7 @@ const baseframeworks: BaseFramework[] = [
   "flutter",
   "solid-js",
   "vanilla",
+  "uidl"
 ];
 
 function BaseFrameworkSelect({
